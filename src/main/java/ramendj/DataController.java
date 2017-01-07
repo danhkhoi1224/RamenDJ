@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
+
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 
 
 @SuppressWarnings("unused")
@@ -90,7 +93,20 @@ public class DataController {
 	   
 	  }
 	  
-	 
+	 @RequestMapping(value="/download", method=RequestMethod.GET)
+		public ResponseEntity<Resource> donwloadFile() {
+			System.out.println("\n********** Download MP3 File : ************\n");
+			
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.parseMediaType("audio/mpeg"));
+			headers.setContentDispositionFormData("remix", "remix.mp3");
+			File file = new File("C:/audio/yeu.mp3");
+					
+			
+			FileSystemResource fileSystemResource = new FileSystemResource(file);
+			
+			return new ResponseEntity<>(fileSystemResource, headers, HttpStatus.OK);
+		}
 	    
 	   
 	    
