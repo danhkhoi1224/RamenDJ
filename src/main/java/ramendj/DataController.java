@@ -6,6 +6,7 @@ package ramendj;
 import java.awt.List;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,12 +23,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 
@@ -41,7 +44,7 @@ public class DataController {
 	
 	    @RequestMapping("/audio/getallbyname")
 	    @ResponseBody
-		  public    ResponseEntity<ArrayList<String>> getAllByName(String name) {
+		 public    ResponseEntity<ArrayList<String>> getAllByName(String name) {
 		    try {
 		    	
 		    	ArrayList<String> fileNameList = getAllName(name);
@@ -145,4 +148,35 @@ public class DataController {
 	    	}
 	    		return returnList;
 	 }
+
+	 @RequestMapping(value = "/upload", method = RequestMethod.POST)
+		public ResponseEntity<String> postUpPost(@RequestParam("files[]") ArrayList<MultipartFile> file) {
+			int i = 0;
+			File uploadFile = new File("C:/audio/upload_audio.mp3");
+			for (MultipartFile f : file) {
+				if (!f.isEmpty()) {
+					
+					String[] tmp = f.getOriginalFilename().split("\\.");
+					String ext = tmp[tmp.length - 1];
+					
+					
+					try {
+						f.transferTo(uploadFile);
+					} catch (IllegalStateException e) {
+						System.out.println("Uploaded file loi 2.. ");
+						e.printStackTrace();
+						continue;
+					} catch (IOException e) {
+						System.out.println("Uploaded file loi.. ");
+						e.printStackTrace();
+						continue;
+					}
+					System.out.println("Uploaded file.. ");
+					i++;
+				}
+			} 
+			
+			return  ResponseEntity.status(HttpStatus.OK).body("okay");
+		}
+	
 }
