@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,10 +39,25 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class DataController {
 	
+	@CrossOrigin(origins = "http://localhost:5000")
+    @RequestMapping("/audio/result")
+	 public    ResponseEntity<String> recieveResult(String words) {
+        String[] values = words.split(";");
+        for(int i = 0; i < values.length;i++){
+        	values[i]=getFile(values[i]);
+        	System.out.println(values[i] +"xxx");
+        }
+		if(words.isEmpty())
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Failed");
+		else
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("OK"); 
+		
+	}
+	
 	
 	
 		
-	
+	@CrossOrigin(origins = "http://localhost:5000")
 	    @RequestMapping("/audio/getallbyname")
 	    @ResponseBody
 		 public    ResponseEntity<ArrayList<String>> getAllByName(String name) {
@@ -70,7 +86,7 @@ public class DataController {
 		 
 	  
 	    
-	    
+	@CrossOrigin(origins = "http://localhost:5000")
 	 @RequestMapping("/audio/getbyname")
 	  @ResponseBody
 	  public ResponseEntity<String> get(String name) {
@@ -95,7 +111,7 @@ public class DataController {
 	    }
 	   
 	  }
-	  
+	@CrossOrigin(origins = "http://localhost:5000")
 	 @RequestMapping(value="/download", method=RequestMethod.GET)
 		public ResponseEntity<Resource> donwloadFile() {
 			System.out.println("\n********** Download MP3 File : ************\n");
@@ -119,7 +135,7 @@ public class DataController {
 	    	File returnFile;
 	    	for(int i = 0; i<listOfFiles.length;i++)
 	    	{
-	    		System.out.println("dang xe ten" + listOfFiles[i]);
+	    		//System.out.println("dang xe ten" + listOfFiles[i]);
 	    		//if(listOfFiles[i].getName().toLowerCase().contains(name.toLowerCase())==true)
 	    		if(listOfFiles[i].getName().compareToIgnoreCase(name+".mp3")==0)
 	    		{
@@ -127,7 +143,7 @@ public class DataController {
 	    			return listOfFiles[i].getAbsolutePath();
 	    		}
 	    	}
-	    		return null;
+	    		return "";
 	 }
 	 
 	 
@@ -148,7 +164,7 @@ public class DataController {
 	    	}
 	    		return returnList;
 	 }
-
+	 @CrossOrigin(origins = "http://localhost:5000")
 	 @RequestMapping(value = "/upload", method = RequestMethod.POST)
 		public ResponseEntity<String> postUpPost(@RequestParam("files[]") ArrayList<MultipartFile> file) {
 			int i = 0;
